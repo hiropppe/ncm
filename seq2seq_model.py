@@ -131,14 +131,18 @@ class Seq2SeqModel(object):
 
     def lstm_cell():
         return tf.contrib.rnn.BasicLSTMCell(size, reuse=tf.get_variable_scope().reuse)
+
     single_cell = gru_cell
 
     if use_lstm:
         single_cell = lstm_cell
+
     cell = single_cell()
+
     if num_layers > 1:
         cell_1 = tf.contrib.rnn.MultiRNNCell([single_cell() for _ in range(num_layers)], state_is_tuple = False)
         cell_2 = tf.contrib.rnn.MultiRNNCell([single_cell() for _ in range(num_layers)], state_is_tuple = False)
+
     """
     def single_cell():
         cell = tf.contrib.rnn.GRUCell(size, reuse = tf.get_variable_scope().reuse)
@@ -152,6 +156,7 @@ class Seq2SeqModel(object):
         else:
             return single_cell()
     """
+
     def seq2seq_f(encoder_inputs, decoder_inputs, do_decode):
         if attention:
             print("Attension Model")
@@ -257,10 +262,10 @@ class Seq2SeqModel(object):
         # If we use output projection, we need to project outputs for decoding.
         if output_projection is not None:
             for b in xrange(len(buckets)):
-            self.outputs[b] = [
-                tf.matmul(output, output_projection[0]) + output_projection[1]
-                for output in self.outputs[b]
-            ]
+                self.outputs[b] = [
+                    tf.matmul(output, output_projection[0]) + output_projection[1]
+                    for output in self.outputs[b]
+                ]
         """
 
     # Gradients and SGD update operation for training the model.
